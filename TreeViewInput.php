@@ -2,32 +2,33 @@
 
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @package   yii2-tree-manager
+ *
  * @version   1.0.4
  */
 
 namespace kartik\tree;
 
-use Yii;
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Json;
-use yii\base\Model;
-use yii\base\InvalidConfigException;
-use yii\web\View;
 use kartik\tree\models\Tree;
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\base\Model;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\helpers\Json;
+use yii\web\View;
 
 /**
  * An input widget that extends kartik\tree\TreeView, and allows one to
  * select records from the tree.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
+ *
  * @since  1.0
  */
 class TreeViewInput extends TreeView
 {
     /**
-     * Caret rendered for the dropdown toggle
+     * Caret rendered for the dropdown toggle.
      */
     const CARET = '<div class="kv-carets"><span class="caret kv-dn"></span><span class="caret kv-up"></span></div>';
 
@@ -53,7 +54,7 @@ class TreeViewInput extends TreeView
 
     /**
      * @var bool whether to show the input as a dropdown select. If set to false,
-     * it will display directly the tree view selector widget.
+     *           it will display directly the tree view selector widget.
      */
     public $asDropdown = true;
 
@@ -64,20 +65,20 @@ class TreeViewInput extends TreeView
 
     /**
      * @var array the configuration of the tree view dropdown. The following
-     * configuration options are available:
-     * - input: array the HTML attributes for the dropdown input container which displays
-     *   the selected tree items. The following special options are available:
-     *   - placeholder: string, defaults to `Select...`
-     * - dropdown: array, the HTML attributes for the dropdown tree view menu.
-     * - options: array, the HTML attributes for the wrapper container
-     * - caret: string, the markup for rendering the dropdown indicator for up and down.
-     *   Defaults to TreeViewInput::CARET.
+     *            configuration options are available:
+     *            - input: array the HTML attributes for the dropdown input container which displays
+     *            the selected tree items. The following special options are available:
+     *            - placeholder: string, defaults to `Select...`
+     *            - dropdown: array, the HTML attributes for the dropdown tree view menu.
+     *            - options: array, the HTML attributes for the wrapper container
+     *            - caret: string, the markup for rendering the dropdown indicator for up and down.
+     *            Defaults to TreeViewInput::CARET.
      */
     public $dropdownConfig = [];
 
     /**
      * @var array the HTML attributes for the input that will store the
-     * selected nodes for the widget
+     *            selected nodes for the widget
      */
     public $options = ['class' => 'form-control hide'];
 
@@ -92,7 +93,7 @@ class TreeViewInput extends TreeView
     private $_disabled;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -116,7 +117,7 @@ class TreeViewInput extends TreeView
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function run()
     {
@@ -125,7 +126,7 @@ class TreeViewInput extends TreeView
     }
 
     /**
-     * Initialize tree dropdown menu settings and options
+     * Initialize tree dropdown menu settings and options.
      */
     protected function initDropdown()
     {
@@ -140,18 +141,18 @@ class TreeViewInput extends TreeView
         Html::addCssClass($input, $css);
         Html::addCssClass($dropdown, 'dropdown-menu kv-tree-dropdown');
         Html::addCssClass($options, 'dropdown kv-tree-dropdown-container');
-        $id = $this->options['id'] . '-tree-input';
+        $id = $this->options['id'].'-tree-input';
         $this->_placeholder = ArrayHelper::remove($input, 'placeholder', Yii::t('kvtree', 'Select...'));
         $this->_placeholder = Html::tag('span', $this->_placeholder, ['class' => 'kv-placeholder']);
         $config['dropdown'] = array_replace_recursive([
-            'id' => $id . '-menu',
-            'role' => 'menu',
+            'id'              => $id.'-menu',
+            'role'            => 'menu',
             'aria-labelledby' => $id,
         ], $dropdown);
         $config['input'] = array_replace_recursive([
-            'id' => $id,
-            'tabindex' => -1,
-            'data-toggle' => 'dropdown',
+            'id'            => $id,
+            'tabindex'      => -1,
+            'data-toggle'   => 'dropdown',
             'aria-haspopup' => 'true',
             'aria-expanded' => 'false',
         ], $input);
@@ -163,7 +164,7 @@ class TreeViewInput extends TreeView
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderWidget()
     {
@@ -172,19 +173,19 @@ class TreeViewInput extends TreeView
         }
         $content = strtr($this->renderWrapper(), [
                 '{heading}' => $this->renderHeading(),
-                '{search}' => $this->renderSearch(),
+                '{search}'  => $this->renderSearch(),
                 '{toolbar}' => $this->renderToolbar(),
-            ]) . "\n" .
+            ])."\n".
             $this->getInput();
         if ($this->asDropdown) {
             return $this->renderDropdown($content);
         }
+
         return $content;
     }
 
-
     /**
-     * Generates the dropdown tree menu
+     * Generates the dropdown tree menu.
      *
      * @param string $content the content to be embedded in the dropdown menu
      *
@@ -193,13 +194,14 @@ class TreeViewInput extends TreeView
     protected function renderDropdown($content)
     {
         $config = $this->dropdownConfig;
-        $input = Html::tag('div', $config['caret'] . $this->_placeholder, $config['input']);
+        $input = Html::tag('div', $config['caret'].$this->_placeholder, $config['input']);
         $dropdown = Html::tag('div', $content, $config['dropdown']);
-        return Html::tag('div', $input . $dropdown, $config['options']);
+
+        return Html::tag('div', $input.$dropdown, $config['options']);
     }
 
     /**
-     * Generates the hidden input for storage
+     * Generates the hidden input for storage.
      *
      * @return string
      */
@@ -208,11 +210,12 @@ class TreeViewInput extends TreeView
         if ($this->hasModel()) {
             return Html::activeHiddenInput($this->model, $this->attribute, $this->options);
         }
+
         return Html::hiddenInput($this->name, $this->value, $this->options);
     }
 
     /**
-     * Renders the markup for the button actions toolbar
+     * Renders the markup for the button actions toolbar.
      *
      * @return string
      */
@@ -222,11 +225,12 @@ class TreeViewInput extends TreeView
             return '';
         }
         unset($this->toolbar[self::BTN_CREATE], $this->toolbar[self::BTN_CREATE_ROOT], $this->toolbar[self::BTN_REMOVE]);
+
         return parent::renderToolbar();
     }
 
     /**
-     * @return boolean whether this widget is associated with a data model.
+     * @return bool whether this widget is associated with a data model.
      */
     protected function hasModel()
     {
@@ -234,7 +238,7 @@ class TreeViewInput extends TreeView
     }
 
     /**
-     * Registers assets for TreeViewInput
+     * Registers assets for TreeViewInput.
      */
     public function registerInputAssets()
     {
@@ -246,15 +250,15 @@ class TreeViewInput extends TreeView
         $id = $this->options['id'];
         $name = 'treeinput';
         $opts = Json::encode([
-            'treeId' => $this->treeOptions['id'],
-            'inputId' => $this->dropdownConfig['input']['id'],
-            'dropdownId' => $this->dropdownConfig['dropdown']['id'],
+            'treeId'      => $this->treeOptions['id'],
+            'inputId'     => $this->dropdownConfig['input']['id'],
+            'dropdownId'  => $this->dropdownConfig['dropdown']['id'],
             'placeholder' => $this->_placeholder,
-            'value' => empty($this->value) ? '' : $this->value,
-            'caret' => $this->dropdownConfig['caret']
+            'value'       => empty($this->value) ? '' : $this->value,
+            'caret'       => $this->dropdownConfig['caret'],
         ]);
-        $var = $name . '_' . hash('crc32', $opts);
-        $this->options['data-krajee-' . $name] = $var;
+        $var = $name.'_'.hash('crc32', $opts);
+        $this->options['data-krajee-'.$name] = $var;
         $view->registerJs("var {$var}={$opts};", View::POS_HEAD);
         $view->registerJs("jQuery('#{$id}').{$name}({$var});");
     }

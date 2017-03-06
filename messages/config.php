@@ -1,7 +1,8 @@
 <?php
+
 return [
     // string, required, root directory of all source files
-    'sourcePath' => __DIR__ . DIRECTORY_SEPARATOR . '..',
+    'sourcePath' => __DIR__.DIRECTORY_SEPARATOR.'..',
     // string, required, root directory containing message translations.
     'messagePath' => __DIR__,
     // array, required, list of language codes that the extracted messages
