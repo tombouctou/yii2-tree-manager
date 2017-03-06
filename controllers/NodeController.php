@@ -2,24 +2,24 @@
 
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @package   yii2-tree-manager
+ *
  * @version   1.0.4
  */
 
 namespace kartik\tree\controllers;
 
+use kartik\tree\TreeView;
 use Yii;
+use yii\base\Event;
+use yii\base\InvalidCallException;
 use yii\helpers\Json;
 use yii\web\Response;
-use yii\base\InvalidCallException;
 use yii\web\View;
-use yii\base\Event;
-use kartik\tree\TreeView;
 
 class NodeController extends \yii\web\Controller
 {
     /**
-     * @var array the list of keys in $_POST which must be cast as boolean
+     * @var array the list of keys in which must be cast as boolean
      */
     public static $boolKeys = [
         'isAdmin',
@@ -28,11 +28,11 @@ class NodeController extends \yii\web\Controller
         'showIDAttribute',
         'multiple',
         'treeNodeModify',
-        'allowNewRoots'
+        'allowNewRoots',
     ];
 
     /**
-     * Gets the data from $_POST after parsing boolean values
+     * Gets the data from $_POST after parsing boolean values.
      *
      * @return array
      */
@@ -45,11 +45,12 @@ class NodeController extends \yii\web\Controller
         foreach ($_POST as $key => $value) {
             $out[$key] = in_array($key, static::$boolKeys) ? filter_var($value, FILTER_VALIDATE_BOOLEAN) : $value;
         }
+
         return $out;
     }
 
     /**
-     * Checks if request is valid and throws exception if invalid condition is true
+     * Checks if request is valid and throws exception if invalid condition is true.
      *
      * @param bool $isInvalid whether the request is invalid
      *
@@ -68,7 +69,7 @@ class NodeController extends \yii\web\Controller
     }
 
     /**
-     * Saves a node once form is submitted
+     * Saves a node once form is submitted.
      */
     public function actionSave()
     {
@@ -79,15 +80,15 @@ class NodeController extends \yii\web\Controller
         $module = TreeView::module();
         $keyAttr = $module->dataStructure['keyAttribute'];
         $session = Yii::$app->session;
-        /**
+        /*
          * @var \kartik\tree\models\Tree $node
          */
         if ($treeNodeModify) {
-            $node = new $modelClass;
+            $node = new $modelClass();
             $successMsg = Yii::t('kvtree', 'The node was successfully created.');
             $errorMsg = Yii::t('kvtree', 'Error while creating the node. Please try again later.');
         } else {
-            $tag = explode("\\", $modelClass);
+            $tag = explode('\\', $modelClass);
             $tag = array_pop($tag);
             $id = $_POST[$tag][$keyAttr];
             $node = $modelClass::findOne($id);
@@ -123,12 +124,12 @@ class NodeController extends \yii\web\Controller
                 $success = false;
                 $errorMsg = "<ul style='padding:0'>\n";
                 foreach ($errors as $err) {
-                    $errorMsg .= "<li>" . Yii::t('kvtree', "Node # {id} - '{name}': {error}", $err) . "</li>\n";
+                    $errorMsg .= '<li>'.Yii::t('kvtree', "Node # {id} - '{name}': {error}", $err)."</li>\n";
                 }
-                $errorMsg .= "</ul>";
+                $errorMsg .= '</ul>';
             }
         } else {
-            $errorMsg = '<ul style="margin:0"><li>' . implode('</li><li>', $node->getFirstErrors()) . '</li></ul>';
+            $errorMsg = '<ul style="margin:0"><li>'.implode('</li><li>', $node->getFirstErrors()).'</li></ul>';
         }
         $session->set('kvNodeId', $node->$keyAttr);
         if ($success) {
@@ -136,11 +137,12 @@ class NodeController extends \yii\web\Controller
         } else {
             $session->setFlash('error', $errorMsg);
         }
+
         return $this->redirect($currUrl);
     }
 
     /**
-     * View, create, or update a tree node via ajax
+     * View, create, or update a tree node via ajax.
      *
      * @return string json encoded response
      */
@@ -155,26 +157,26 @@ class NodeController extends \yii\web\Controller
         $iconsList = $nodeAddlViews = [];
         extract(static::getPostData());
         if (!isset($id) || empty($id)) {
-            $node = new $modelClass;
+            $node = new $modelClass();
             $node->initDefaults();
         } else {
             $node = $modelClass::findOne($id);
         }
         $module = TreeView::module();
         $params = $module->treeStructure + $module->dataStructure + [
-                'node' => $node,
-                'parentKey' => $parentKey,
-                'action' => $formAction,
-                'formOptions' => empty($formOptions) ? [] : Json::decode($formOptions),
-                'modelClass' => $modelClass,
-                'currUrl' => $currUrl,
-                'isAdmin' => $isAdmin,
-                'iconsList' => $iconsList,
-                'softDelete' => $softDelete,
+                'node'            => $node,
+                'parentKey'       => $parentKey,
+                'action'          => $formAction,
+                'formOptions'     => empty($formOptions) ? [] : Json::decode($formOptions),
+                'modelClass'      => $modelClass,
+                'currUrl'         => $currUrl,
+                'isAdmin'         => $isAdmin,
+                'iconsList'       => $iconsList,
+                'softDelete'      => $softDelete,
                 'showFormButtons' => $showFormButtons,
                 'showIDAttribute' => $showIDAttribute,
-                'nodeView' => $nodeView,
-                'nodeAddlViews' => $nodeAddlViews
+                'nodeView'        => $nodeView,
+                'nodeAddlViews'   => $nodeAddlViews,
             ];
         if (!empty($module->unsetAjaxBundles)) {
             Event::on(View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($module) {
@@ -186,6 +188,7 @@ class NodeController extends \yii\web\Controller
         $callback = function () use ($nodeView, $params) {
             return $this->renderAjax($nodeView, ['params' => $params]);
         };
+
         return self::process(
             $callback,
             Yii::t('kvtree', 'Error while viewing the node. Please try again later.'),
@@ -194,7 +197,7 @@ class NodeController extends \yii\web\Controller
     }
 
     /**
-     * Remove a tree node
+     * Remove a tree node.
      */
     public function actionRemove()
     {
@@ -208,6 +211,7 @@ class NodeController extends \yii\web\Controller
         $callback = function () use ($node, $softDelete) {
             return $node->removeNode($softDelete);
         };
+
         return self::process(
             $callback,
             Yii::t('kvtree', 'Error removing the node. Please try again later.'),
@@ -216,7 +220,7 @@ class NodeController extends \yii\web\Controller
     }
 
     /**
-     * Move a tree node
+     * Move a tree node.
      */
     public function actionMove()
     {
@@ -245,10 +249,13 @@ class NodeController extends \yii\web\Controller
                 } elseif ($dir == 'r') {
                     $nodeFrom->appendTo($nodeTo);
                 }
+
                 return $nodeFrom->save();
             }
+
             return true;
         };
+
         return self::process(
             $callback,
             Yii::t('kvtree', 'Error while moving the node. Please try again later.'),
@@ -257,15 +264,15 @@ class NodeController extends \yii\web\Controller
     }
 
     /**
-     * Processes a code block and catches exceptions
+     * Processes a code block and catches exceptions.
      *
      * @param Closure $callback   the function to execute (this returns a valid `$success`)
      * @param string  $msgError   the default error message to return
      * @param string  $msgSuccess the default success error message to return
      *
      * @return array outcome of the code consisting of following keys:
-     * - 'out': string, the output content
-     * - 'status': string, success or error
+     *               - 'out': string, the output content
+     *               - 'status': string, success or error
      */
     public static function process($callback, $msgError, $msgSuccess)
     {
@@ -286,6 +293,7 @@ class NodeController extends \yii\web\Controller
         }
         if ($success !== false) {
             $out = $msgSuccess === null ? $success : $msgSuccess;
+
             return ['out' => $out, 'status' => 'success'];
         } else {
             return ['out' => $error, 'status' => 'error'];

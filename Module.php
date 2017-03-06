@@ -2,20 +2,21 @@
 
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @package   yii2-tree
+ *
  * @version   1.0.4
  */
 
 namespace kartik\tree;
 
 use Yii;
-use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 /**
  * The tree management module for Yii Framework 2.0.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
+ *
  * @since  1.0
  */
 class Module extends \kartik\base\Module
@@ -40,7 +41,7 @@ class Module extends \kartik\base\Module
 
     /**
      * @var array the configuration of additional data attributes
-     * for the tree
+     *            for the tree
      */
     public $dataStructure = [];
 
@@ -48,25 +49,25 @@ class Module extends \kartik\base\Module
      * @var array the default configuration settings for the tree view widget
      */
     public $treeViewSettings = [
-        'nodeView' => '@kvtree/views/_form',
+        'nodeView'      => '@kvtree/views/_form',
         'nodeAddlViews' => [
             self::VIEW_PART_1 => '',
             self::VIEW_PART_2 => '',
             self::VIEW_PART_3 => '',
             self::VIEW_PART_4 => '',
             self::VIEW_PART_5 => '',
-        ]
+        ],
     ];
 
     /**
      * @var array the list of asset bundles that would be unset when rendering
-     * the node detail form via ajax
+     *            the node detail form via ajax
      */
     public $unsetAjaxBundles = [
         'yii\web\YiiAsset',
         'yii\web\JqueryAsset',
         'yii\widgets\ActiveFormAsset',
-        'yii\validators\ValidationAsset'
+        'yii\validators\ValidationAsset',
     ];
 
     /**
@@ -77,23 +78,23 @@ class Module extends \kartik\base\Module
         $this->_msgCat = 'kvtree';
         parent::init();
         $this->treeStructure += [
-            'treeAttribute' => 'root',
-            'leftAttribute' => 'lft',
+            'treeAttribute'  => 'root',
+            'leftAttribute'  => 'lft',
             'rightAttribute' => 'rgt',
             'depthAttribute' => 'lvl',
         ];
         $this->dataStructure += [
-            'keyAttribute' => 'id',
-            'nameAttribute' => 'name',
-            'iconAttribute' => 'icon',
-            'iconTypeAttribute' => 'icon_type'
+            'keyAttribute'      => 'id',
+            'nameAttribute'     => 'name',
+            'iconAttribute'     => 'icon',
+            'iconTypeAttribute' => 'icon_type',
         ];
         $nodeActions = ArrayHelper::getValue($this->treeViewSettings, 'nodeActions', []);
         $nodeActions += [
             self::NODE_MANAGE => Url::to(['/treemanager/node/manage']),
-            self::NODE_SAVE => Url::to(['/treemanager/node/save']),
+            self::NODE_SAVE   => Url::to(['/treemanager/node/save']),
             self::NODE_REMOVE => Url::to(['/treemanager/node/remove']),
-            self::NODE_MOVE => Url::to(['/treemanager/node/move']),
+            self::NODE_MOVE   => Url::to(['/treemanager/node/move']),
         ];
         $this->treeViewSettings['nodeActions'] = $nodeActions;
     }

@@ -2,29 +2,25 @@
 
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @package   yii2-tree-manager
+ *
  * @version   1.0.4
  */
 
 namespace kartik\tree\models;
 
-use Yii;
 use yii\helpers\Html;
-use yii\helpers\HtmlPurifier;
-use kartik\tree\TreeView;
-use creocoder\nestedsets\NestedSetsBehavior;
 
 /**
- * This is the base model class for the nested set tree structure
+ * This is the base model class for the nested set tree structure.
  *
  * @property string  $id
  * @property string  $root
  * @property string  $lft
  * @property string  $rgt
- * @property integer $lvl
+ * @property int $lvl
  * @property string  $name
  * @property string  $icon
- * @property integer $icon_type
+ * @property int $icon_type
  * @property bool    $active
  * @property bool    $selected
  * @property bool    $disabled
@@ -44,7 +40,7 @@ class Tree extends \yii\db\ActiveRecord
 
     /**
      * @var string the classname for the TreeQuery that implements the NestedSetQueryBehavior.
-     * If not set this will default to `kartik\tree\models\TreeQuery`.
+     *             If not set this will default to `kartik\tree\models\TreeQuery`.
      */
     public static $treeQueryClass;
 
@@ -55,7 +51,7 @@ class Tree extends \yii\db\ActiveRecord
 
     /**
      * @var bool whether to HTML purify the tree node icon content before saving.
-     * Defaults to `true`.
+     *           Defaults to `true`.
      */
     public $purifyNodeIcons = true;
 

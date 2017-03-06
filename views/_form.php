@@ -1,21 +1,17 @@
 <?php
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @package   yii2-tree-manager
+ *
  * @version   1.0.4
  */
-
 use kartik\form\ActiveForm;
 use kartik\tree\Module;
 use kartik\tree\TreeView;
 use yii\bootstrap\Alert;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Json;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use kartik\widgets\Select2;
+use yii\helpers\Json;
 
-/**
+/*
  * @var yii\web\View            $this
  * @var kartik\tree\models\Tree $node
  * @var kartik\form\ActiveForm  $form
@@ -29,7 +25,7 @@ use kartik\widgets\Select2;
 ?>
 <?php
 extract($params);
-$isAdmin = ($isAdmin == true || $isAdmin === "true"); // admin mode flag
+$isAdmin = ($isAdmin == true || $isAdmin === 'true'); // admin mode flag
 $inputOpts = [];                                      // readonly/disabled input options for node
 $flagOptions = ['class' => 'kv-parent-flag'];         // node options for parent/child
 
@@ -42,14 +38,14 @@ if (empty($parentKey)) {
 } else {
     $parent = $modelClass::findOne($parentKey);
 }
-$parentName = empty($parent) ? '' : $parent->$nameAttribute . ' &raquo; ';
+$parentName = empty($parent) ? '' : $parent->$nameAttribute.' &raquo; ';
 
 // get module and setup form
 $module = TreeView::module(); // the treemanager module
-$formOptions['id'] = 'kv-' . uniqid();
+$formOptions['id'] = 'kv-'.uniqid();
 $form = ActiveForm::begin([   // the active form instance
-    'action' => $action,
-    'options' => $formOptions
+    'action'  => $action,
+    'options' => $formOptions,
 ]);
 // the primary key input field
 if ($showIDAttribute) {
@@ -82,7 +78,8 @@ $showAlert = function ($type, $body = '', $hide = true) {
     if ($hide) {
         $class .= ' hide';
     }
-    return Html::tag('div', '<div>' . $body . '</div>', ['class' => $class]);
+
+    return Html::tag('div', '<div>'.$body.'</div>', ['class' => $class]);
 };
 
 // render additional view content helper
@@ -92,6 +89,7 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
     }
     $p = $params;
     $p['form'] = $form;
+
     return $this->render($nodeAddlViews[$part], $p);
 };
 ?>
@@ -125,7 +123,7 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
         </button>
     </div>
 <?php endif; ?>
-    <h3><?= $parentName . $name ?></h3>
+    <h3><?= $parentName.$name ?></h3>
     <div class="clearfix"></div>
     <hr style="margin: 10px 0;">
 
@@ -207,11 +205,12 @@ echo $renderContent(Module::VIEW_PART_1);
                         $checked = true;
                         $value = '';
                     }
-                    return '<div class="radio">' . Html::radio($name, $checked, [
-                        'value' => $value,
-                        'label' => $label,
-                        'disabled' => !empty($inputOpts['readonly']) || !empty($inputOpts['disabled'])
-                    ]) . '</div>';
+
+                    return '<div class="radio">'.Html::radio($name, $checked, [
+                        'value'    => $value,
+                        'label'    => $label,
+                        'disabled' => !empty($inputOpts['readonly']) || !empty($inputOpts['disabled']),
+                    ]).'</div>';
                 },
                 'selector' => 'radio',
             ]) ?>
